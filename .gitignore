@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Test / coverage / type-check caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+
+# MLflow / experiment tracking
+mlruns/
+mlartifacts/
+wandb/
+
+# Model artifacts and data (use the registry / DVC, never commit these)
+*.pkl
+*.joblib
+*.onnx
+*.h5
+*.pt
+*.bin
+data/
+
+# Secrets
+.env
+.env.*
+*.pem
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

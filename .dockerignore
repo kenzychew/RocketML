@@ -1,0 +1,41 @@
+# Build context = repo root (so uv sees pyproject.toml + uv.lock).
+# Keep the context tiny: only pyproject.toml, uv.lock, and serving/app are needed.
+
+# Git
+.git/
+.gitignore
+
+# Virtual environment (rebuilt inside the image)
+.venv/
+env/
+venv/
+
+# Python / tooling caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Local dev, docs, CI metadata (not needed at runtime)
+docs/
+.github/
+*.md
+Makefile
+
+# Tests (the image serves the app, it does not run tests)
+serving/tests/
+
+# MLflow / data / models
+mlruns/
+mlartifacts/
+wandb/
+data/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
