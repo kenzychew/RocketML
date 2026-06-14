@@ -1,0 +1,11 @@
+# Line endings: store LF in the repo and check out LF in the working tree, so
+# Windows (core.autocrlf) cannot rewrite files to CRLF. CRLF breaks Dockerfiles,
+# Makefiles, and shell scripts when they run inside Linux containers / CI.
+* text=auto eol=lf
+
+# Generated lockfile -- collapse it in diffs and PR reviews.
+uv.lock linguist-generated=true
+
+# Binary assets (e.g. diagrams): never apply text/EOL conversion.
+*.png binary
+*.jpg binary
