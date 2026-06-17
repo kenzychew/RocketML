@@ -1,5 +1,7 @@
 # RocketML
 
+[![ci](https://github.com/kenzychew/RocketML/actions/workflows/ci.yml/badge.svg)](https://github.com/kenzychew/RocketML/actions/workflows/ci.yml)
+
 RocketML is a small self-service platform for serving NLP text models. You bring
 a trained text classifier; it wraps the model in a REST API (text in,
 `{label, score}` out), packages it as a slim container, runs it through CI,

@@ -1,5 +1,5 @@
-# CI: lint + test on every push to main and every pull request, run through uv.
-# Build + push to GHCR (and ADR-0002) arrive in the dedicated CI phase.
+# CI: lint + test on every push to main and every pull request. On main, also
+# train the model, build the serving image, and publish it to GHCR.
 name: ci
 
 on:
@@ -22,3 +22,36 @@ jobs:
         run: uv run ruff check .
       - name: Test
         run: uv run pytest -q
+
+  build-and-push:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Train model (writes artifacts/sentiment.joblib for the image to bake)
+        run: uv run --group train python model/train.py
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Resolve lowercase image name
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}/serving" >> "$GITHUB_ENV"
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./serving/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
