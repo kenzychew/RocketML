@@ -6,8 +6,10 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.136.3",
-    "mlflow>=3.13.0",
+    "joblib>=1.5.3",
     "prometheus-client>=0.25.0",
+    "pydantic-settings>=2.14.1",
+    "scikit-learn>=1.9.0",
     "uvicorn>=0.49.0",
 ]
 
@@ -30,4 +32,8 @@ dev = [
     "httpx>=0.28.1",
     "pytest>=9.0.3",
     "ruff>=0.15.17",
+]
+train = [
+    "datasets>=5.0.0",
+    "mlflow>=3.13.0",
 ]

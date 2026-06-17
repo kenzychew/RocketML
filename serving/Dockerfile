@@ -21,6 +21,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Application code (the only first-party source the runtime needs).
 COPY serving/app ./app
 
+# Serving model artifact (produced by `make train`); loaded directly at runtime.
+COPY artifacts ./artifacts
+
 # --- runtime: slim, non-root image that serves the app ---------------------
 FROM python:3.12-slim AS runtime
 
@@ -29,7 +32,8 @@ WORKDIR /app
 
 # Bring over the venv and app code, owned by the non-root user.
 COPY --from=build --chown=appuser:appuser /app /app
-ENV PATH="/app/.venv/bin:$PATH"
+ENV PATH="/app/.venv/bin:$PATH" \
+    PRED_MODEL_PATH=/app/artifacts/sentiment.joblib
 
 USER appuser
 EXPOSE 8000

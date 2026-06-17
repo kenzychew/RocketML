@@ -29,7 +29,7 @@ hardcoded stub -- the real model and MLflow integration land in Phase 1.
     client --POST /predict {"text": ...}--> FastAPI (serving/app)
                                               |
                                               v
-                              model (loaded from the MLflow registry)
+                              model (joblib artifact, registered in MLflow)
                                               |
                                               v
                     {"label": ..., "score": ...}  <-- JSON response

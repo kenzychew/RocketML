@@ -26,6 +26,7 @@ dist/
 # MLflow / experiment tracking
 mlruns/
 mlartifacts/
+mlflow.db
 wandb/
 
 # Model artifacts and data (use the registry / DVC, never commit these)
@@ -36,6 +37,7 @@ wandb/
 *.pt
 *.bin
 data/
+artifacts/
 
 # Secrets
 .env

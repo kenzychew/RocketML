@@ -2,17 +2,22 @@
 
 Exposes the inference API:
     GET  /health   liveness / readiness probe
-    POST /predict  text in, {label, score} out (stubbed in Phase 0)
+    POST /predict  text in, {label, score} out (TF-IDF + LogReg sentiment model)
     GET  /metrics  Prometheus metrics
 
-The ``/predict`` response is a hardcoded stub for the Phase 0 walking skeleton;
-the real model and MLflow integration arrive in Phase 1.
+The model is loaded from the MLflow registry (config-driven) on first use; see
+``model_loader`` and ``config``.
 """
 
-from fastapi import FastAPI
+import logging
+
+from fastapi import FastAPI, HTTPException
 from prometheus_client import Counter, Histogram, make_asgi_app
 
+from . import model_loader
 from .schemas import PredictRequest, PredictResponse
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="RocketML", version="0.1.0")
 
@@ -35,19 +40,22 @@ def health() -> dict[str, str]:
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest) -> PredictResponse:
-    """Classify the input text.
-
-    Phase 0 returns a hardcoded stub. Phase 1 will swap in the real model
-    loaded from the MLflow registry.
+    """Classify the input text as positive/negative sentiment.
 
     Args:
         request: Prediction request carrying the input text.
 
     Returns:
         The predicted label and its confidence score.
+
+    Raises:
+        HTTPException: 503 if the model cannot be loaded or inference fails.
     """
     PREDICT_REQUESTS.inc()
     with PREDICT_LATENCY.time():
-        # TODO(phase-1): replace the stub with the real model.predict(request.text).
-        label, score = "positive", 0.97
+        try:
+            label, score = model_loader.predict(request.text)
+        except Exception as exc:
+            logger.exception("Prediction failed")
+            raise HTTPException(status_code=503, detail="Model unavailable") from exc
     return PredictResponse(label=label, score=score)

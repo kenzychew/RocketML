@@ -2,7 +2,7 @@
 .PHONY: sync train test lint build up down
 
 sync:  ; uv sync
-train: ; uv run python model/train.py
+train: ; uv run --group train python model/train.py
 test:  ; uv run pytest -q
 lint:  ; uv run ruff check .
 build: ; docker build -f serving/Dockerfile -t rocketml:dev .
