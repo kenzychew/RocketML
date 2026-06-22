@@ -5,7 +5,7 @@ Exposes the inference API:
     POST /predict  text in, {label, score} out (TF-IDF + LogReg sentiment model)
     GET  /metrics  Prometheus metrics
 
-The model is loaded from the MLflow registry (config-driven) on first use; see
+The model is loaded from a configured joblib artifact on first use; see
 ``model_loader`` and ``config``.
 """
 
@@ -25,6 +25,7 @@ app = FastAPI(title="RocketML", version="0.1.0")
 app.mount("/metrics", make_asgi_app())
 
 PREDICT_REQUESTS = Counter("predict_requests", "Total number of /predict requests.")
+PREDICT_ERRORS = Counter("predict_errors", "Total number of failed /predict requests.")
 PREDICT_LATENCY = Histogram("predict_latency_seconds", "Latency of /predict in seconds.")
 
 
@@ -56,6 +57,7 @@ def predict(request: PredictRequest) -> PredictResponse:
         try:
             label, score = model_loader.predict(request.text)
         except Exception as exc:
+            PREDICT_ERRORS.inc()
             logger.exception("Prediction failed")
             raise HTTPException(status_code=503, detail="Model unavailable") from exc
     return PredictResponse(label=label, score=score)

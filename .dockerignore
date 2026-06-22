@@ -24,6 +24,11 @@ docs/
 .github/
 *.md
 Makefile
+deploy/
+monitoring/
+scripts/
+model/
+raw/
 
 # Tests (the image serves the app, it does not run tests)
 serving/tests/

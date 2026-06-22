@@ -1,0 +1,12 @@
+# Load dashboard JSON from disk on startup (dashboards as code).
+apiVersion: 1
+
+providers:
+  - name: rocketml
+    orgId: 1
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false

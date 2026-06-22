@@ -1,0 +1,10 @@
+# Prometheus scrape config: pull metrics from the RocketML serving service.
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: rocketml-serving
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["serving:8000"]
