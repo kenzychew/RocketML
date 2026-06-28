@@ -1,0 +1,16 @@
+﻿apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rocketml
+  namespace: default
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rocketml
+      app.kubernetes.io/instance: rocketml
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
