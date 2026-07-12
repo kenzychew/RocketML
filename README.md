@@ -9,6 +9,8 @@ A small self-service platform for serving NLP text classifiers as a containerise
 ![kubernetes](https://img.shields.io/badge/deploy-kubernetes-326ce5)
 ![helm](https://img.shields.io/badge/chart-helm-0f1689)
 
+**Live demo:** [huggingface.co/spaces/knzychw/rocketml-sentiment](https://huggingface.co/spaces/knzychw/rocketml-sentiment) -- type a movie review, get a prediction.
+
 ## What this is
 
 You bring a trained text classifier. RocketML wraps it in a REST API (text in, `{label, score}` out), packages it as a slim container, runs it through CI, tracks and registers it in MLflow, exposes Prometheus metrics, and deploys it to Kubernetes with a Helm chart.
@@ -66,6 +68,14 @@ curl -s -X POST localhost:8000/predict \
   -d '{"text": "this movie was a complete waste of time"}'
 # {"label":"negative","score":0.93}
 ```
+
+## Live demo
+
+The bundled sentiment model runs publicly on a Hugging Face Space:
+[huggingface.co/spaces/knzychw/rocketml-sentiment](https://huggingface.co/spaces/knzychw/rocketml-sentiment).
+It is the same joblib artifact this repo trains and serves, behind a small
+Gradio UI, rate-limited with a per-client cooldown and a daily prediction
+budget ("demo credits"). The `demo/` folder is what the Space runs.
 
 ## Running it
 
@@ -137,6 +147,7 @@ deploy/
   compose/           docker-compose.yml for the local stack
   helm/rocketml/     hand-written Helm chart (Deployment, Service, probes)
   k8s/               servicemonitor.yaml for in-cluster scraping
+demo/                Gradio app + model artifact for the public HF Space demo
 scripts/             fire_traffic.py (load generator)
 docs/decisions/      ADRs
 Makefile             sync, train, test, lint, build, up, down, traffic
@@ -157,14 +168,14 @@ The full reasoning is in `docs/decisions/`. The choices that mattered most:
 
 ## Roadmap
 
-Phases 0 through 4 are done. Phases 5 and 6 are planned.
+Phases 0 through 5 are done. Phase 6 is planned.
 
 - [x] Phase 0 -- walking skeleton: containerised FastAPI returning a prediction, one passing test
 - [x] Phase 1 -- real model trained, logged, and registered in MLflow; wired into `/predict`
 - [x] Phase 2 -- CI: lint, test, train, build, push to GHCR
 - [x] Phase 3 -- local Compose stack with Prometheus + Grafana observability (tagged `v1-mvp`)
 - [x] Phase 4 -- Helm chart on a kind cluster with in-cluster monitoring
-- [ ] Phase 5 -- public demo deployment
+- [x] Phase 5 -- public demo deployment (live Hugging Face Space)
 - [ ] Phase 6 -- final polish and narrative
 
 ## Future extensions

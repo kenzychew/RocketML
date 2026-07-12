@@ -38,6 +38,8 @@ wandb/
 *.bin
 data/
 artifacts/
+# Exception: the HF Space demo ships its own copy of the tiny (<1 MB) artifact
+!demo/sentiment.joblib
 
 # Secrets
 .env
