@@ -13,11 +13,11 @@ for a single-instance demo.
 import os
 import threading
 import time
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 
-import spaces
 import gradio as gr
 import joblib
+import spaces
 
 MODEL = joblib.load("sentiment.joblib")
 
@@ -78,7 +78,7 @@ def _check_limits(client: str) -> None:
     """
     global _day, _count
     with _lock:
-        today = datetime.now(timezone.utc).date()
+        today = datetime.now(UTC).date()
         if _day != today:
             _day, _count = today, 0
             _last_call.clear()
@@ -106,7 +106,7 @@ def classify(text: str, request: gr.Request) -> dict[str, float]:
         return {}
     _check_limits(_client_id(request))
     probs = MODEL.predict_proba([text])[0]
-    return {str(label): float(p) for label, p in zip(MODEL.classes_, probs)}
+    return {str(label): float(p) for label, p in zip(MODEL.classes_, probs, strict=True)}
 
 
 demo = gr.Interface(
