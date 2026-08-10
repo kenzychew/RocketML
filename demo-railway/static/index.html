@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RocketML -- sentiment demo</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    max-width: 640px;
+    margin: 3rem auto;
+    padding: 0 1.25rem;
+    line-height: 1.5;
+  }
+  h1 { font-size: 1.4rem; margin-bottom: 0.25rem; }
+  p.sub { color: #666; margin-top: 0; }
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1rem;
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #999;
+    resize: vertical;
+  }
+  button {
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    border: none;
+    background: #2b5adf;
+    color: white;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.6; cursor: not-allowed; }
+  #result {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    display: none;
+  }
+  #result.positive { background: #e3f6e8; border: 1px solid #2f9e52; }
+  #result.negative { background: #fbe9e9; border: 1px solid #c0392b; }
+  #result .label { font-weight: 600; text-transform: capitalize; font-size: 1.1rem; }
+  #result .score { color: #555; }
+  #error { color: #c0392b; margin-top: 1rem; display: none; }
+</style>
+</head>
+<body>
+  <h1>RocketML -- sentiment demo</h1>
+  <p class="sub">TF-IDF + LogisticRegression sentiment classifier, trained on IMDB reviews.</p>
+
+  <textarea id="text" rows="4" placeholder="Type a movie review..."></textarea>
+  <br />
+  <button id="submit">Predict</button>
+
+  <div id="result">
+    <div class="label" id="label"></div>
+    <div class="score" id="score"></div>
+  </div>
+  <div id="error"></div>
+
+  <script>
+    const textEl = document.getElementById("text");
+    const submitEl = document.getElementById("submit");
+    const resultEl = document.getElementById("result");
+    const labelEl = document.getElementById("label");
+    const scoreEl = document.getElementById("score");
+    const errorEl = document.getElementById("error");
+
+    async function submit() {
+      const text = textEl.value.trim();
+      if (!text) return;
+
+      submitEl.disabled = true;
+      resultEl.style.display = "none";
+      errorEl.style.display = "none";
+
+      try {
+        const res = await fetch("/predict", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ text }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.detail || "Prediction failed.");
+        }
+        resultEl.className = data.label;
+        resultEl.style.display = "block";
+        labelEl.textContent = data.label;
+        scoreEl.textContent = `confidence: ${(data.score * 100).toFixed(1)}%`;
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = "block";
+      } finally {
+        submitEl.disabled = false;
+      }
+    }
+
+    submitEl.addEventListener("click", submit);
+    textEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submit();
+    });
+  </script>
+</body>
+</html>
