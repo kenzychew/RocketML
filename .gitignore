@@ -40,6 +40,8 @@ data/
 artifacts/
 # Exception: the HF Space demo ships its own copy of the tiny (<1 MB) artifact
 !demo/sentiment.joblib
+# Exception: the Railway demo ships its own copy too, for the same reason
+!demo-railway/model/sentiment.joblib
 
 # Secrets
 .env
