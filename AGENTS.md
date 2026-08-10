@@ -5,6 +5,7 @@ This file is the project's committed home for project-intrinsic agent knowledge:
 - Add durable project-specific notes here as they are discovered through real work.
 - The trained joblib artifact pickles a reference to `clean_text` by its training-time import path, `app.preprocessing` (see `model/train.py`'s `sys.path` trick). Any self-contained folder that loads the artifact directly (`demo/`, `demo-railway/`) must ship its own `app/preprocessing.py` at that exact module path, or `joblib.load` fails to unpickle the vectorizer's preprocessor. `serving/app/preprocessing.py` is the source of truth to copy from.
 - Public-facing demo folders (`demo/`, `demo-railway/`) each bundle their own copy of `sentiment.joblib` rather than sharing one, since each is built as an independent, single-directory deploy root. Both artifacts are checked in as explicit exceptions to the root `.gitignore`'s `*.joblib` rule.
+- Railway's build-plan step only reads a `railway.toml`/`railway.json` at the **repo root** — it never looks inside a service's configured root directory. The root `railway.json` (`{"builder": "dockerfile"}`) exists solely to force Dockerfile mode and skip Python auto-detection; the actual root directory and `dockerfilePath` for the `demo-railway` service are set at the Railway service level (dashboard/API), not in this repo.
 
 ## Maintaining this file
 
