@@ -15,6 +15,15 @@
   }
   h1 { font-size: 1.4rem; margin-bottom: 0.25rem; }
   p.sub { color: #666; margin-top: 0; }
+  .note {
+    background: #f2f5fc;
+    border: 1px solid #c7d3ee;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin: 1rem 0 1.5rem;
+    font-size: 0.95rem;
+  }
+  .note a { color: #2b5adf; }
   textarea {
     width: 100%;
     box-sizing: border-box;
@@ -51,6 +60,18 @@
 <body>
   <h1>RocketML -- sentiment demo</h1>
   <p class="sub">TF-IDF + LogisticRegression sentiment classifier, trained on IMDB reviews.</p>
+
+  <p class="note">
+    This isn't the interesting part. It's a small model, and the box below just
+    proves the serving API underneath it responds correctly. The actual project is
+    the pipeline that builds and ships it: CI on every push, GHCR image publishing,
+    a hand-written Helm chart, Kubernetes deployment, and Prometheus/Grafana
+    monitoring. See the
+    <a href="https://github.com/kenzychew/RocketML" target="_blank" rel="noopener">repo</a>
+    for the architecture, or the
+    <a href="https://github.com/kenzychew/RocketML/actions" target="_blank" rel="noopener">Actions history</a>
+    for real CI runs, not a claim.
+  </p>
 
   <textarea id="text" rows="4" placeholder="Type a movie review..."></textarea>
   <br />
