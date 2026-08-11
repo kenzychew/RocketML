@@ -109,6 +109,115 @@ def classify(text: str, request: gr.Request) -> dict[str, float]:
     return {str(label): float(p) for label, p in zip(MODEL.classes_, probs, strict=True)}
 
 
+# Palette matches portfolio-hub's app/globals.css design tokens, so this Space
+# reads as the same site as the rest of the portfolio's live demos. Every
+# foreground/background pairing below was checked against WCAG AA before
+# being chosen; keep pairings as-is rather than introducing new ones.
+_BG = "#f6f1e7"  # --color-bg: page background
+_BG_RAISED = "#efe8d9"  # --color-bg-raised: panel/card background
+_FG = "#1c1917"  # --color-fg: body text
+_FG_MUTED = "#5c564c"  # --color-fg-muted: secondary/muted text
+_BORDER = "#ddd3bf"  # --color-border
+_ACCENT = "#b8451f"  # --color-accent: buttons, sparing accent
+_ACCENT_FG = "#f6f1e7"  # --color-accent-fg: text on the accent color
+_ACCENT_INK = "#8a3216"  # --color-accent-ink: accent used as small/thin text
+
+THEME = gr.themes.Base(
+    font=[gr.themes.GoogleFont("Public Sans"), "ui-sans-serif", "system-ui", "sans-serif"],
+    font_mono=[
+        gr.themes.GoogleFont("JetBrains Mono"),
+        "ui-monospace",
+        "Consolas",
+        "monospace",
+    ],
+).set(
+    body_background_fill=_BG,
+    body_background_fill_dark=_BG,
+    body_text_color=_FG,
+    body_text_color_dark=_FG,
+    body_text_color_subdued=_FG_MUTED,
+    body_text_color_subdued_dark=_FG_MUTED,
+    background_fill_primary=_BG,
+    background_fill_primary_dark=_BG,
+    background_fill_secondary=_BG_RAISED,
+    background_fill_secondary_dark=_BG_RAISED,
+    border_color_primary=_BORDER,
+    border_color_primary_dark=_BORDER,
+    border_color_accent=_ACCENT,
+    border_color_accent_dark=_ACCENT,
+    border_color_accent_subdued=_BORDER,
+    border_color_accent_subdued_dark=_BORDER,
+    color_accent=_ACCENT,
+    color_accent_soft=_BG_RAISED,
+    color_accent_soft_dark=_BG_RAISED,
+    link_text_color=_ACCENT_INK,
+    link_text_color_dark=_ACCENT_INK,
+    link_text_color_hover=_ACCENT,
+    link_text_color_hover_dark=_ACCENT,
+    link_text_color_active=_ACCENT_INK,
+    link_text_color_active_dark=_ACCENT_INK,
+    link_text_color_visited=_ACCENT_INK,
+    link_text_color_visited_dark=_ACCENT_INK,
+    block_background_fill=_BG_RAISED,
+    block_background_fill_dark=_BG_RAISED,
+    block_border_color=_BORDER,
+    block_border_color_dark=_BORDER,
+    block_label_text_color=_FG_MUTED,
+    block_label_text_color_dark=_FG_MUTED,
+    block_label_border_color=_BORDER,
+    block_label_border_color_dark=_BORDER,
+    block_title_text_color=_FG,
+    block_title_text_color_dark=_FG,
+    panel_background_fill=_BG_RAISED,
+    panel_background_fill_dark=_BG_RAISED,
+    panel_border_color=_BORDER,
+    panel_border_color_dark=_BORDER,
+    input_background_fill=_BG,
+    input_background_fill_dark=_BG,
+    input_border_color=_BORDER,
+    input_border_color_dark=_BORDER,
+    input_placeholder_color=_FG_MUTED,
+    input_placeholder_color_dark=_FG_MUTED,
+    button_primary_background_fill=_ACCENT,
+    button_primary_background_fill_dark=_ACCENT,
+    button_primary_background_fill_hover=_ACCENT_INK,
+    button_primary_background_fill_hover_dark=_ACCENT_INK,
+    button_primary_text_color=_ACCENT_FG,
+    button_primary_text_color_dark=_ACCENT_FG,
+    button_primary_border_color=_ACCENT,
+    button_primary_border_color_dark=_ACCENT,
+    button_secondary_background_fill=_BG_RAISED,
+    button_secondary_background_fill_dark=_BG_RAISED,
+    button_secondary_background_fill_hover=_BORDER,
+    button_secondary_background_fill_hover_dark=_BORDER,
+    button_secondary_text_color=_FG,
+    button_secondary_text_color_dark=_FG,
+    button_secondary_border_color=_BORDER,
+    button_secondary_border_color_dark=_BORDER,
+    stat_background_fill=_ACCENT,
+    stat_background_fill_dark=_ACCENT,
+    loader_color=_ACCENT,
+    loader_color_dark=_ACCENT,
+    table_even_background_fill=_BG_RAISED,
+    table_even_background_fill_dark=_BG_RAISED,
+    table_odd_background_fill=_BG,
+    table_odd_background_fill_dark=_BG,
+    table_border_color=_BORDER,
+    table_border_color_dark=_BORDER,
+)
+
+# Fraunces is loaded here (rather than as the theme's primary `font`) and
+# scoped to the interface title only; Gradio's theme system has one body
+# font slot, and the title renders as a plain inline-styled <h1>, not a
+# themeable component.
+CUSTOM_CSS = """
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&display=swap');
+
+.gradio-container h1 {
+    font-family: 'Fraunces', ui-serif, serif;
+}
+"""
+
 demo = gr.Interface(
     fn=classify,
     inputs=gr.Textbox(lines=4, label="Text", placeholder="Type a movie review..."),
@@ -121,6 +230,8 @@ demo = gr.Interface(
         "rate-limited and has a daily prediction budget."
     ),
     examples=EXAMPLES,
+    theme=THEME,
+    css=CUSTOM_CSS,
 )
 
 if __name__ == "__main__":
