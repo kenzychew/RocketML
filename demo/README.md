@@ -1,7 +1,7 @@
 ---
 title: RocketML Sentiment Demo
-colorFrom: blue
-colorTo: indigo
+colorFrom: yellow
+colorTo: red
 sdk: gradio
 sdk_version: 5.50.0
 app_file: main.py
