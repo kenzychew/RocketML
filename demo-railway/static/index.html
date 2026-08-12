@@ -4,84 +4,231 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>RocketML -- sentiment demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap"
+  rel="stylesheet"
+/>
 <style>
-  :root { color-scheme: light dark; }
-  body {
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    max-width: 640px;
-    margin: 3rem auto;
-    padding: 0 1.25rem;
-    line-height: 1.5;
+  :root {
+    color-scheme: light;
+    --color-bg: #f6f1e7;
+    --color-bg-raised: #efe8d9;
+    --color-fg: #1c1917;
+    --color-fg-muted: #5c564c;
+    --color-border: #ddd3bf;
+    --color-accent: #b8451f;
+    --color-accent-fg: #f6f1e7;
+    --color-accent-ink: #8a3216;
   }
-  h1 { font-size: 1.4rem; margin-bottom: 0.25rem; }
-  p.sub { color: #666; margin-top: 0; }
-  .note {
-    background: #f2f5fc;
-    border: 1px solid #c7d3ee;
-    border-radius: 8px;
-    padding: 0.85rem 1rem;
-    margin: 1rem 0 1.5rem;
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--color-bg-raised);
+    color: var(--color-fg);
+    font-family: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.6;
+    padding: 3.5rem 1.25rem;
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 2.75rem;
+    box-shadow: 0 1px 2px rgba(28, 25, 23, 0.04), 0 12px 28px rgba(28, 25, 23, 0.07);
+  }
+
+  h1 {
+    font-family: "Fraunces", ui-serif, Georgia, serif;
+    font-weight: 700;
+    font-size: 1.9rem;
+    margin: 0 0 0.35rem;
+    color: var(--color-fg);
+  }
+
+  p.sub {
+    color: var(--color-fg-muted);
+    margin: 0 0 1.5rem;
     font-size: 0.95rem;
   }
-  .note a { color: #2b5adf; }
+
+  .note {
+    background: var(--color-bg-raised);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+    margin: 0 0 1.75rem;
+    font-size: 0.92rem;
+  }
+
+  .note a {
+    color: var(--color-accent-ink);
+  }
+
+  .note a:hover {
+    color: var(--color-accent);
+  }
+
+  label.field-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-fg-muted);
+    margin-bottom: 0.5rem;
+  }
+
   textarea {
     width: 100%;
-    box-sizing: border-box;
+    font: inherit;
     font-size: 1rem;
-    padding: 0.6rem;
-    border-radius: 6px;
-    border: 1px solid #999;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-fg);
     resize: vertical;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  button {
-    margin-top: 0.75rem;
-    font-size: 1rem;
-    padding: 0.5rem 1.25rem;
-    border-radius: 6px;
-    border: none;
-    background: #2b5adf;
-    color: white;
+
+  textarea::placeholder {
+    color: var(--color-fg-muted);
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(184, 69, 31, 0.15);
+  }
+
+  button#submit {
+    display: block;
+    margin-top: 1rem;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.7rem 1.6rem;
+    border-radius: 10px;
+    border: 1px solid var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-accent-fg);
     cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
   }
-  button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  button#submit:hover:not(:disabled) {
+    background: var(--color-accent-ink);
+    border-color: var(--color-accent-ink);
+  }
+
+  button#submit:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
   #result {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    border-radius: 8px;
+    margin-top: 1.75rem;
+    padding: 1.25rem 1.4rem;
+    border-radius: 12px;
+    background: var(--color-bg-raised);
+    border: 1px solid var(--color-border);
     display: none;
   }
-  #result.positive { background: #e3f6e8; border: 1px solid #2f9e52; }
-  #result.negative { background: #fbe9e9; border: 1px solid #c0392b; }
-  #result .label { font-weight: 600; text-transform: capitalize; font-size: 1.1rem; }
-  #result .score { color: #555; }
-  #error { color: #c0392b; margin-top: 1rem; display: none; }
+
+  .result-header {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-fg-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .label {
+    font-weight: 600;
+    text-transform: capitalize;
+    font-size: 1.3rem;
+    color: var(--color-fg);
+    margin-bottom: 0.9rem;
+  }
+
+  .confidence {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .confidence-track {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-border);
+    overflow: hidden;
+  }
+
+  .confidence-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--color-accent);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+
+  .confidence-value {
+    font-family: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    font-size: 0.85rem;
+    color: var(--color-fg-muted);
+    min-width: 3.5rem;
+    text-align: right;
+  }
+
+  #error {
+    color: var(--color-accent-ink);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    display: none;
+  }
 </style>
 </head>
 <body>
-  <h1>RocketML -- sentiment demo</h1>
-  <p class="sub">TF-IDF + LogisticRegression sentiment classifier, trained on IMDB reviews.</p>
+  <div class="container">
+    <h1>RocketML -- sentiment demo</h1>
+    <p class="sub">TF-IDF + LogisticRegression sentiment classifier, trained on IMDB reviews.</p>
 
-  <p class="note">
-    This isn't the interesting part. It's a small model, and the box below just
-    proves the serving API underneath it responds correctly. The actual project is
-    the pipeline that builds and ships it: CI on every push, GHCR image publishing,
-    a hand-written Helm chart, Kubernetes deployment, and Prometheus/Grafana
-    monitoring. See the
-    <a href="https://github.com/kenzychew/RocketML" target="_blank" rel="noopener">repo</a>
-    for the architecture, or the
-    <a href="https://github.com/kenzychew/RocketML/actions" target="_blank" rel="noopener">Actions history</a>
-    for real CI runs, not a claim.
-  </p>
+    <p class="note">
+      This isn't the interesting part. It's a small model, and the box below just
+      proves the serving API underneath it responds correctly. The actual project is
+      the pipeline that builds and ships it: CI on every push, GHCR image publishing,
+      a hand-written Helm chart, Kubernetes deployment, and Prometheus/Grafana
+      monitoring. See the
+      <a href="https://github.com/kenzychew/RocketML" target="_blank" rel="noopener">repo</a>
+      for the architecture, or the
+      <a href="https://github.com/kenzychew/RocketML/actions" target="_blank" rel="noopener">Actions history</a>
+      for real CI runs, not a claim.
+    </p>
 
-  <textarea id="text" rows="4" placeholder="Type a movie review..."></textarea>
-  <br />
-  <button id="submit">Predict</button>
+    <label class="field-label" for="text">Movie review</label>
+    <textarea id="text" rows="4" placeholder="Type a movie review..."></textarea>
+    <button id="submit">Predict</button>
 
-  <div id="result">
-    <div class="label" id="label"></div>
-    <div class="score" id="score"></div>
+    <div id="result">
+      <div class="result-header">Sentiment</div>
+      <div class="label" id="label"></div>
+      <div class="confidence">
+        <div class="confidence-track">
+          <div class="confidence-fill" id="confidence-fill"></div>
+        </div>
+        <span class="confidence-value" id="score"></span>
+      </div>
+    </div>
+    <div id="error"></div>
   </div>
-  <div id="error"></div>
 
   <script>
     const textEl = document.getElementById("text");
@@ -89,6 +236,7 @@
     const resultEl = document.getElementById("result");
     const labelEl = document.getElementById("label");
     const scoreEl = document.getElementById("score");
+    const confidenceFillEl = document.getElementById("confidence-fill");
     const errorEl = document.getElementById("error");
 
     async function submit() {
@@ -112,7 +260,8 @@
         resultEl.className = data.label;
         resultEl.style.display = "block";
         labelEl.textContent = data.label;
-        scoreEl.textContent = `confidence: ${(data.score * 100).toFixed(1)}%`;
+        confidenceFillEl.style.width = `${data.score * 100}%`;
+        scoreEl.textContent = `${(data.score * 100).toFixed(1)}%`;
       } catch (err) {
         errorEl.textContent = err.message;
         errorEl.style.display = "block";
