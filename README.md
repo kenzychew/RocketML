@@ -9,7 +9,7 @@ A small self-service platform for serving NLP text classifiers as a containerise
 ![kubernetes](https://img.shields.io/badge/deploy-kubernetes-326ce5)
 ![helm](https://img.shields.io/badge/chart-helm-0f1689)
 
-**Live demo:** [huggingface.co/spaces/knzychw/rocketml-sentiment](https://huggingface.co/spaces/knzychw/rocketml-sentiment) -- type a movie review, get a prediction.
+**Live demo:** [huggingface.co/spaces/kenzychew/rocketml-sentiment](https://huggingface.co/spaces/kenzychew/rocketml-sentiment) -- type a movie review, get a prediction.
 
 ## What this is
 
@@ -72,7 +72,7 @@ curl -s -X POST localhost:8000/predict \
 ## Live demo
 
 The bundled sentiment model runs publicly on a Hugging Face Space:
-[huggingface.co/spaces/knzychw/rocketml-sentiment](https://huggingface.co/spaces/knzychw/rocketml-sentiment).
+[huggingface.co/spaces/kenzychew/rocketml-sentiment](https://huggingface.co/spaces/kenzychew/rocketml-sentiment).
 It is the same joblib artifact this repo trains and serves, behind a small
 Gradio UI, rate-limited with a per-client cooldown and a daily prediction
 budget ("demo credits"). The `demo/` folder is what the Space runs.
