@@ -66,7 +66,7 @@ For local use, Docker Compose brings up serving + MLflow + Prometheus + Grafana 
 curl -s -X POST localhost:8000/predict \
   -H 'content-type: application/json' \
   -d '{"text": "this movie was a complete waste of time"}'
-# {"label":"negative","score":0.93}
+# {"label":"negative","score":0.89}
 ```
 
 ## Live demo
