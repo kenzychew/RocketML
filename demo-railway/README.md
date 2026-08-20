@@ -8,8 +8,7 @@ rather than imported) and bundles its own copy of the joblib artifact under
 `model/`, the same way `demo/` bundles its own copy for the Hugging Face
 Space.
 
-Railway wiring (env vars, service creation) is a follow-up; this folder is
-built and proven to run locally first.
+This is deployed and live on Railway at https://rocket.kenzychew.com.
 
 ## Run locally
 

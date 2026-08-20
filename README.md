@@ -71,11 +71,17 @@ curl -s -X POST localhost:8000/predict \
 
 ## Live demo
 
-The bundled sentiment model runs publicly on a Hugging Face Space:
-[huggingface.co/spaces/kenzychew/rocketml-sentiment](https://huggingface.co/spaces/kenzychew/rocketml-sentiment).
-It is the same joblib artifact this repo trains and serves, behind a small
-Gradio UI, rate-limited with a per-client cooldown and a daily prediction
-budget ("demo credits"). The `demo/` folder is what the Space runs.
+The bundled sentiment model runs publicly in two places:
+
+- **Hugging Face Space:** [huggingface.co/spaces/kenzychew/rocketml-sentiment](https://huggingface.co/spaces/kenzychew/rocketml-sentiment) --
+  a small Gradio UI, rate-limited with a per-client cooldown and a daily
+  prediction budget ("demo credits"). The `demo/` folder is what the Space
+  runs.
+- **Railway:** [rocket.kenzychew.com](https://rocket.kenzychew.com) --
+  the same model behind a plain FastAPI + static frontend, same rate
+  limiting. The `demo-railway/` folder is what this deploy runs.
+
+Both serve the same joblib artifact this repo trains and serves.
 
 ## Running it
 
